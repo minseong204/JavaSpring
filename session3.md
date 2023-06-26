@@ -230,3 +230,76 @@ public class MemberApp {
 * AppConfig는 구체 클래스를 선택한다. 배역에 맞는 담당 배우를 선택한다. 애플리케이션이 어떻게 동작해야 할지 전체 구성을 책임진다.
 * 이제 각 배우들은 담당 기능을 실행하는 책임만 지면 된다.
 * `OrderServiceImpl`은 기능을 실행하는 책임만 지면 된다.
+
+## AppConfig 리팩터링
+
+현재 AppConfig를 보면 `중복`이 있고, `역할`에 따른 `구현`이 잘 안보인다.
+
+`기대하는 그림`
+<img src="https://ifh.cc/g/4zVjxm.jpg">
+
+`리팩터링 전`
+```java
+package hello.core;
+
+import hello.core.discount.FixDiscountPolicy;
+import hello.core.member.MemberService;
+import hello.core.member.MemberServiceImpl;
+import hello.core.member.MemoryMemberRepository;
+import hello.core.order.OrderService;
+import hello.core.order.OrderServiceImpl;
+
+public class AppConfig {
+
+    public MemberService memberService() {
+        return new MemberServiceImpl(new MemoryMemberRepository());     // 생성자 주입
+    }
+
+    public OrderService orderService() {
+        return new OrderServiceImpl(new MemoryMemberRepository(), new FixDiscountPolicy());
+    }
+
+
+}
+
+```
+
+`리팩터링 후`
+```java
+package hello.core;
+
+import hello.core.discount.DiscountPolicy;
+import hello.core.discount.FixDiscountPolicy;
+import hello.core.member.MemberRepository;
+import hello.core.member.MemberService;
+import hello.core.member.MemberServiceImpl;
+import hello.core.member.MemoryMemberRepository;
+import hello.core.order.OrderService;
+import hello.core.order.OrderServiceImpl;
+
+public class AppConfig {
+
+    public MemberService memberService() {
+        return new MemberServiceImpl(memberRepository());     // 생성자 주입
+    }
+
+    private static MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
+    public OrderService orderService() {
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
+    }
+
+
+    public DiscountPolicy discountPolicy() {
+        return new FixDiscountPolicy();
+    }
+
+
+}
+
+```
+
+* `new MemoryMemberRepository()` 이 부분이 중복 제거되었다. 이제 `MemoryMemberRepository`를 다른 구현체로 변경할 때 한 부분만 변경하면 된다.
+* `AppConfig`를 보면 역할과 구현 클래스가 한눈에 들어온다. 애플리케이션 전체 구성이 어떻게 되어있는지 빠르게 파악할 수 있다.
