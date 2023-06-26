@@ -32,3 +32,9 @@
   * 회원을 가입하고 조회할 수 있다.
   * 회원은 일반과 VIP 두 가지 등급이 존재한다.
   * 회원 데이터는 자체 DB를 구축할 수 있고, 외부 시스템과 연동할 수 있다.
+
+
+
+`회원 도메인 협력 관계`
+<img src="https://file.notion.so/f/s/0184d32f-0b87-4c74-b0a4-0a79dba87c6b/Untitled.jpeg?id=58f9beab-b977-4521-8071-1bd06828e907&table=block&spaceId=66565165-181a-42cf-902d-d809eb755c8d&expirationTimestamp=1687852167627&signature=H8OBRuGHNOBTqaCxzijjjQw3deh77vs4cN9Uphhb7as&downloadName=Untitled.jpeg">
+
