@@ -38,3 +38,4 @@
 `회원 도메인 협력 관계`
 <img src="https://ifh.cc/g/rfZhs6.jpg">
 
+* 회원 서비스 : `MemberServiceImpl`
