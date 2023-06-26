@@ -42,3 +42,28 @@ public class OrderServiceImpl implements OrderService {
     * 구체(구현)클래스 : `FixDiscountPolicy` , `RateDiscountPolicy`
   * OCP : 변경하지 않고 확장할 수 있다고 했는데!
     * **→ 지금 코드는 기능을 확장해서 변경하면, 클라이언트 코드에 영향을 준다!** 따라서 **OCP를 위반 한다**
+
+`정책 변경`
+<img src="https://ifh.cc/g/J4oBv4.jpg">
+`중요!` 그래서 `FixDiscountPolicy` 를 `RateDiscountPolicy`로 변경하는 순간 `OrderServiceImpl`의 소스코드도 함께 변경해야 한다! `OCP 위반!!`
+
+### 해결방안
+`인터페이스에만 의존하도록 설계를 변경하자`
+<img src="https://ifh.cc/g/GbC80T.jpg">
+
+```java
+import hello.core.discount.DiscountPolicy;
+import hello.core.order.OrderService;
+
+public class orderServiceImpl implements OrderService {
+    //priavte final DiscountPolicy = new RateDiscountPolicy();
+    private DiscountPolicy discountPolicy;
+}
+```
+
+* 인터페이스에만 의존하도록 설계와 코드를 변경했다.
+* **그런데 구현체가 없는데 어떻게 코드를 실행할 수 있을까?**
+* 실제 실행을 해보면 NPE(null Pointer DiscountPolicy)
+
+* 해결방안
+* 이 문제를 해결하려면 누군가가 클라이언트인 `OrderServiceImpl`에 `DiscountPolicy` 의 구현 객체를 대신 생성하고 주입해주어야 한다.
