@@ -36,5 +36,5 @@
 
 
 `회원 도메인 협력 관계`
-<img src="https://file.notion.so/f/s/0184d32f-0b87-4c74-b0a4-0a79dba87c6b/Untitled.jpeg?id=58f9beab-b977-4521-8071-1bd06828e907&table=block&spaceId=66565165-181a-42cf-902d-d809eb755c8d&expirationTimestamp=1687852167627&signature=H8OBRuGHNOBTqaCxzijjjQw3deh77vs4cN9Uphhb7as&downloadName=Untitled.jpeg">
+<img src="https://ifh.cc/g/rfZhs6.jpg">
 
