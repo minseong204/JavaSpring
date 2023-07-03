@@ -322,3 +322,84 @@ class ApplicationContextExtendsFindTest {
 }
 
 ```
+
+
+## BeanFactory와 ApplicationContext
+
+beanFactory와 ApplicationContext에 대해 알아보자
+
+**BeanFactory**
+* 스프링 컨테이너의 최상위 인터페이스이다.
+* 스프링 빈을 관리하고 조회하는 역할을 담당한다.
+* `getBean()`을 제공한다.
+* 지금까지 우리가 사용했던 대부분의 기능은 BeanFactory가 제공하는 기능이다.
+
+**ApplicationContext**
+* BeanFactory 기능을 모두 상속받아서 제공한다.
+* 빈을 관리하고 검색하는 기능을 BeanFactory가 제공해주는데, 그러면 둘의 차이가 무엇일까?
+* 애플리케이션을 개발할 때는 빈을 관리하고 조회하는 기능은 물론이고, 수 많은 부가기능이 필요하다.
+
+**ApplicationContext**가 제공하는 부가기능
+<img src="https://ifh.cc/g/jVykwL.png">
+
+* **메시지소스를 활용한 국제화 기능**
+  * 예를 들어서 한국에서 들어오면 한국어로, 영어권에서 들어오면 영어로 출력
+  * 예) message_KR, message_UK, message_CA
+* **환경변수**
+  * 로컬, 개발, 운영등을 구분해서 처리
+* **애플리케이션 이벤트**
+  * 이벤트를 발행하고 구독하는 모델을 편리하게 지원
+* **편리한 리소스 조회**
+  * 파일, 클래스패스, 외부 등에서 리소스를 편리하게 조회
+
+```java
+package org.springframework.context;
+
+import org.springframework.beans.factory.HierarchicalBeanFactory;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.core.env.EnvironmentCapable;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.lang.Nullable;
+
+/**
+ * Central interface to provide configuration for an application.
+ * This is read-only while the application is running, but may be
+ * reloaded if the implementation supports this.
+ *
+ * <p>An ApplicationContext provides:
+ * <ul>
+ * <li>Bean factory methods for accessing application components.
+ * Inherited from {@link org.springframework.beans.factory.ListableBeanFactory}.
+ * <li>The ability to load file resources in a generic fashion.
+ * Inherited from the {@link org.springframework.core.io.ResourceLoader} interface.
+ * <li>The ability to publish events to registered listeners.
+ * Inherited from the {@link ApplicationEventPublisher} interface.
+ * <li>The ability to resolve messages, supporting internationalization.
+ * Inherited from the {@link MessageSource} interface.
+ * <li>Inheritance from a parent context. Definitions in a descendant context
+ * will always take priority. This means, for example, that a single parent
+ * context can be used by an entire web application, while each servlet has
+ * its own child context that is independent of that of any other servlet.
+ * </ul>
+ *
+ * <p>In addition to standard {@link org.springframework.beans.factory.BeanFactory}
+ * lifecycle capabilities, ApplicationContext implementations detect and invoke
+ * {@link ApplicationContextAware} beans as well as {@link ResourceLoaderAware},
+ * {@link ApplicationEventPublisherAware} and {@link MessageSourceAware} beans.
+ *
+ * @author Rod Johnson
+ * @author Juergen Hoeller
+ * @see ConfigurableApplicationContext
+ * @see org.springframework.beans.factory.BeanFactory
+ * @see org.springframework.core.io.ResourceLoader
+ */
+public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory,
+		MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
+```
+
+**정리**
+* ApplicationContext는 BeanFactory의 기능을 상속받는다
+* ApplicationContext는 빈 관리기능 + 편리한 부가 기능을 제공한다.
+* BeanFactory를 직접 사용할 일은 거의 없다. 부가기능이 포함된 ApplicationContext를 사용한다.
+* BeanFactory나 ApplicationContext를 <U>스프링 컨테이너</U>라고 한다.
