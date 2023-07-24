@@ -229,4 +229,66 @@ class StatefulServiceTest {
 * 사용자A의 주문금액은 10000원이 되어야 하는데, 20000원이라는 결과가 나왔다.
 * 실무에서 이런 경우를 종종 보는데, 이로인해 정말 해결하기 어려운 큰 문제들이 터진다. (몇년에 한번씩 꼭 만난다.)
 * 진짜 공유필드는 조심해야 한다! 스프링 빈은 항상 무상태(stateless)로 설계하자!
-  
+
+## @Configuration과 싱글톤
+
+그런데 이상한점이 있따. 다음 AppConfig 코드를 보자.
+```java
+package hello.core;
+
+import hello.core.discount.DiscountPolicy;
+import hello.core.discount.RateDiscountPolicy;
+import hello.core.member.MemberRepository;
+import hello.core.member.MemberService;
+import hello.core.member.MemberServiceImpl;
+import hello.core.member.MemoryMemberRepository;
+import hello.core.order.OrderService;
+import hello.core.order.OrderServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public MemberService memberService() {
+        return new MemberServiceImpl(memberRepository());     // 생성자 주입
+    }
+
+    @Bean
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
+    @Bean
+    public OrderService orderService() {
+        return new OrderServiceImpl(
+                memberRepository(),
+                discountPolicy());
+    }
+    
+    @Bean
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
+    @Bean
+    public DiscountPolicy discountPolicy() {
+        return new RateDiscountPolicy();
+    }
+
+
+
+}
+
+/*
+* @Configuration → 설정정보를 담당함
+* 각각의 메서드에 @Bean을 달아주게 되면 각각의 메서드들이 컨테이너에 등록이 됌
+*/
+```
+* memberService 빈을 만드는 코드를 보면 `memberRepository()`를 호출한다.
+  * 이 메서드를 호출하면 `new MemoryMemberRepository()`를 호출한다.
+* orderService 빈을 만드는 코드로 동일하게 `memberRepository()`를 호출한다.
+  * 이 메서드를 호출하면 `new MemoryMemberRepository()`를 호출한다.
+
+결과적으로 각각 다른 2개의 `MemoryMemberRepository`가 생성되면서 싱글톤이 깨지는 것 처럼 보인다. 스프링 컨테이너는 이 문제를 어떻게 해결할까?
