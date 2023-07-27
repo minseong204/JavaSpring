@@ -71,4 +71,6 @@
 <br>
 [싱글톤 컨테이너](./session5.md)
 <br>
-[컴포넌트 스캔 (Work In Process)](./session6.md)
+[컴포넌트 스캔](./session6.md)
+<br>
+[의존관계 자동 주입 (Work In Process)](./session7.md)
